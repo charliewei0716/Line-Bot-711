@@ -81,7 +81,7 @@ def callback(request):
                                         "contents": [
                                             {
                                                 "type": "text",
-                                                "text": POIName,
+                                                "text": POIName+"門市",
                                                 "weight": "bold",
                                                 "size": "xl"
                                             },
