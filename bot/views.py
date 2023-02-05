@@ -68,10 +68,41 @@ def callback(request):
                                 Telno = soup.find_all("Telno")[i_store].get_text()
                                 FaxNo = soup.find_all("FaxNo")[i_store].get_text()
                                 Address = soup.find_all("Address")[i_store].get_text()
+                                list_StoreImageTitle = soup.find_all("StoreImageTitle")[i_store].get_text().split(",")
 
                                 uri_Telno = "tel:" + Telno.strip()
                                 google_map_query = parse.quote("7-ELEVEN "+POIName+"門市")
                                 uri_Address = "https://www.google.com/maps/search/?api=1&query=" + google_map_query
+
+                                icon_box_contents = []
+                                print(len(list_StoreImageTitle))
+                                list_StoreImageTitle = [
+                                    list_StoreImageTitle[i: i+7] for i in range(0, len(list_StoreImageTitle), 7)
+                                ]
+
+                                line_icon_box_contents = []
+                                for i_line in list_StoreImageTitle:
+                                    icon_box_contents = []
+                                    for store_service in i_line:
+                                        no_service = store_service[:2]
+                                        icon_url = f"https://emap.pcsc.com.tw/menuImg/service_{no_service}.jpg"
+
+                                        icon = {
+                                            "type": "icon",
+                                            "size": "xxl",
+                                            "url": icon_url
+                                        }
+
+                                        icon_box_contents.append(icon)
+
+                                    baseline_box = {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "contents": icon_box_contents,
+                                        "spacing": "sm",
+                                    }
+
+                                    line_icon_box_contents.append(baseline_box)
 
                                 bubble = {
                                     "type": "bubble",
@@ -176,6 +207,13 @@ def callback(request):
                                                         ]
                                                     }
                                                 ]
+                                            },
+                                            {
+                                                "type": "box",
+                                                "layout": "vertical",
+                                                "spacing": "xs",
+                                                "margin": "md",
+                                                "contents": line_icon_box_contents,
                                             }
                                         ]
                                     },
