@@ -1,3 +1,6 @@
 fly.toml
-.git/
+rich_menus
+.git
+.github
 *.sqlite3
+.gitignore
