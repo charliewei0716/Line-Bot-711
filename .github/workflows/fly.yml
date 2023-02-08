@@ -19,5 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: "Set up Python"
+        uses: actions/setup-python@1
+        with:
+          python-version: 3.8
+
+      - name: "Install requirements.txt"
+        run: 
+          pip install -r requirements.txt
+
+      - name: "Update Line rich menu"
+        run: 
+          python ./rich_menus/rich_menus_sdk.py
+
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      
       - run: flyctl deploy --remote-only
