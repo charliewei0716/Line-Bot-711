@@ -1,5 +1,4 @@
 fly.toml
-rich_menus
 .git
 .github
 *.sqlite3
