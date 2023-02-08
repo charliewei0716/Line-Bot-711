@@ -20,4 +20,6 @@ COPY . /code/
 
 EXPOSE 8000
 
+ENTRYPOINT [ "entrypoint.sh" ]
+
 CMD [ "gunicorn", "--bind", ":8000", "--workers", "2", "Linebot.wsgi" ]
