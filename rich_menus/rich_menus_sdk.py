@@ -44,8 +44,12 @@ class RichMenus():
 if __name__ == '__main__':
 
     import os
-    from dotenv import load_dotenv
-    load_dotenv("../.dev.env")
+
+    try:
+        from dotenv import load_dotenv
+        load_dotenv("../.dev.env")
+    except:
+        pass
 
     LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
 
