@@ -1,4 +1,4 @@
-name: Fly Deploy
+name: Line Bot Deploy
 
 on:
   push:
@@ -14,9 +14,8 @@ env:
   LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
 
 jobs:
-
-  deploy:
-    name: Deploy app
+  update-line-rich-menu:
+    name: Update Line rich menu
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,13 +25,19 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: "Install requirements.txt"
+      - name: "Install line-bot-sdk"
         run: 
           pip install line-bot-sdk==2.4.1
 
       - name: "Update Line rich menu"
         run: 
           python ./rich_menus/rich_menus_sdk.py
+
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
 
