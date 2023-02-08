@@ -20,6 +20,6 @@ COPY . /code/
 
 EXPOSE 8000
 
-ENTRYPOINT [ "python", "rich_menus/rich_menus_sdk.py" ]
+ENTRYPOINT [ "python", "rich_menus/rich_menus_sdk.py", "&&" ]
 
 CMD [ "gunicorn", "--bind", ":8000", "--workers", "2", "Linebot.wsgi" ]
