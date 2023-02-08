@@ -44,10 +44,13 @@ class RichMenus():
 if __name__ == '__main__':
 
     import os
+    from pathlib import Path
+
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
     try:
         from dotenv import load_dotenv
-        load_dotenv("../.dev.env")
+        load_dotenv(os.path.join(BASE_DIR, ".dev.env"))
     except:
         pass
 
@@ -70,5 +73,5 @@ if __name__ == '__main__':
         ]
     }
 
-    with open("line_rich_menus.jpg", 'rb') as f:
+    with open(os.path.join(BASE_DIR, "rich_menus", "line_rich_menus.jpg"), 'rb') as f:
         rich_menus.create(rich_menus_body, "image/jpeg", f)
