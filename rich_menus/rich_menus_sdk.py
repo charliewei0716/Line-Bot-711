@@ -54,13 +54,13 @@ if __name__ == '__main__':
     rich_menus.delete_all()
 
     rich_menus_body = {
-        "size": {"width": 800, "height": 270},
+        "size": {"width": 2500, "height": 843},
         "selected": "true",
         "name": "start",
         "chatBarText": "點我開始",
         "areas":[
             {
-            "bounds": {"x": 0, "y": 0, "width": 800, "height": 270},
+            "bounds": {"x": 0, "y": 0, "width": 2500, "height": 843},
             "action": {"type": "message", "text": "小7亞萬"}
             }
         ]

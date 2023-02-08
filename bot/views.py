@@ -75,7 +75,6 @@ def callback(request):
                                 uri_Address = "https://www.google.com/maps/search/?api=1&query=" + google_map_query
 
                                 icon_box_contents = []
-                                print(len(list_StoreImageTitle))
                                 list_StoreImageTitle = [
                                     list_StoreImageTitle[i: i+7] for i in range(0, len(list_StoreImageTitle), 7)
                                 ]
@@ -106,13 +105,21 @@ def callback(request):
 
                                 bubble = {
                                     "type": "bubble",
+                                    "hero": {
+                                        "type": "image",
+                                        "url": "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m",
+                                        "size": "4xl",
+                                        "aspectRatio": "2:1",
+                                        "aspectMode": "fit"
+                                    },
                                     "body": {
                                         "type": "box",
                                         "layout": "vertical",
+                                        "paddingTop": "none",
                                         "contents": [
                                             {
                                                 "type": "text",
-                                                "text": POIName+" 門市",
+                                                "text": POIName,
                                                 "weight": "bold",
                                                 "size": "xl"
                                             },
@@ -212,7 +219,7 @@ def callback(request):
                                                 "type": "box",
                                                 "layout": "vertical",
                                                 "spacing": "xs",
-                                                "margin": "md",
+                                                "margin": "lg",
                                                 "contents": line_icon_box_contents,
                                             }
                                         ]
@@ -221,6 +228,7 @@ def callback(request):
                                         "type": "box",
                                         "layout": "vertical",
                                         "spacing": "sm",
+                                        "paddingTop": "xs",
                                         "contents": [
                                             {
                                                 "type": "button",
