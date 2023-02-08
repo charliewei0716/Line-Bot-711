@@ -20,4 +20,4 @@ COPY . /code/
 
 EXPOSE 8000
 
-CMD [ "python", "rich_menus/rich_menus_sdk.py", "&&", "gunicorn", "--bind", ":8000", "--workers", "2", "Linebot.wsgi" ]
+CMD [ "gunicorn", "--bind", ":8000", "--workers", "2", "Linebot.wsgi" ]
