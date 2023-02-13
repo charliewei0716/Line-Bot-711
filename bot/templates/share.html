@@ -2,13 +2,14 @@
     <head>
         <title></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
+        <input id="line_liff_id" value="{{ line_liff_id }}" type="hidden" />
         <input id="line_liff_url" value="{{ line_liff_url }}" type="hidden" />
         <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
         <script>
             $(document).ready(function () {
                 liff.init({
-                    liffId: '1657891117-WkxkGdjL'
+                    liffId: document.getElementById("line_liff_id").value
                 }).then(() => {
                     const line_liff_url = document.getElementById("line_liff_url").value
                     const getUrlString = location.href

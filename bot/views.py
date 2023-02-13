@@ -22,10 +22,12 @@ from urllib import parse
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
 line_liff_url = settings.LINE_LIFF_URL
+line_liff_id = settings.LINE_LIFF_ID
 
 def share(request):
     context = {
-        "line_liff_url": line_liff_url
+        "line_liff_url": line_liff_url,
+        "line_liff_id": line_liff_id
     }
     return render(request, "share.html", context=context)
  
