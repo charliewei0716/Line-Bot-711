@@ -14,15 +14,20 @@ from linebot.models import (
     MessageTemplateAction
 )
 
+import json
 import requests
 from bs4 import BeautifulSoup
 from urllib import parse
  
 line_bot_api = LineBotApi(settings.LINE_CHANNEL_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+line_liff_url = settings.LINE_LIFF_URL
 
-def index(request):
-    return render(request, "index.html")
+def share(request):
+    context = {
+        "line_liff_url": line_liff_url
+    }
+    return render(request, "share.html", context=context)
  
  
 @csrf_exempt
@@ -66,18 +71,29 @@ def callback(request):
                             for i_store in range(n_store):
                                 if i_store==5:
                                     break
-                                POIID = soup.find_all("POIID")[i_store].get_text()
-                                POIName = soup.find_all("POIName")[i_store].get_text()
-                                Telno = soup.find_all("Telno")[i_store].get_text()
-                                FaxNo = soup.find_all("FaxNo")[i_store].get_text()
-                                Address = soup.find_all("Address")[i_store].get_text()
+                                POIID = soup.find_all("POIID")[i_store].get_text().strip()
+                                POIName = soup.find_all("POIName")[i_store].get_text().strip()
+                                Telno = soup.find_all("Telno")[i_store].get_text().strip()
+                                FaxNo = soup.find_all("FaxNo")[i_store].get_text().strip()
+                                Address = soup.find_all("Address")[i_store].get_text().strip()
                                 list_StoreImageTitle = soup.find_all("StoreImageTitle")[i_store].get_text().split(",")
+                                list_StoreImageTitle = [store_service[:2] for store_service in list_StoreImageTitle]
 
-                                uri_Telno = "tel:" + Telno.strip()
+                                uri_Telno = "tel:" + Telno
                                 google_map_query = parse.quote("7-ELEVEN "+POIName+"門市")
                                 uri_Address = "https://www.google.com/maps/search/?api=1&query=" + google_map_query
 
-                                icon_box_contents = []
+                                print(list_StoreImageTitle)
+
+                                query_parameter = parse.urlencode({
+                                    "POIID": POIID,
+                                    "POIName": POIName,
+                                    "Telno": Telno,
+                                    "FaxNo": FaxNo,
+                                    "Address": Address,
+                                    "StoreImageTitle": ' '.join(list_StoreImageTitle)
+                                })
+
                                 list_StoreImageTitle = [
                                     list_StoreImageTitle[i: i+7] for i in range(0, len(list_StoreImageTitle), 7)
                                 ]
@@ -86,8 +102,7 @@ def callback(request):
                                 for i_line in list_StoreImageTitle:
                                     icon_box_contents = []
                                     for store_service in i_line:
-                                        no_service = store_service[:2]
-                                        icon_url = f"https://emap.pcsc.com.tw/menuImg/service_{no_service}.jpg"
+                                        icon_url = f"https://emap.pcsc.com.tw/menuImg/service_{store_service}.jpg"
 
                                         icon = {
                                             "type": "icon",
@@ -106,155 +121,177 @@ def callback(request):
 
                                     line_icon_box_contents.append(baseline_box)
 
+                                bubble_hero = {
+                                    "type": "image",
+                                    "url": "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m",
+                                    "size": "4xl",
+                                    "aspectRatio": "2:1",
+                                    "aspectMode": "fit"
+                                }
+
+                                bubble_body = {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "paddingTop": "none",
+                                    "contents": [
+                                        {
+                                            "type": "text",
+                                            "text": POIName,
+                                            "weight": "bold",
+                                            "size": "xl"
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "margin": "lg",
+                                            "spacing": "sm",
+                                            "contents": [
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "店號",
+                                                            "color": "#aaaaaa",
+                                                            "size": "sm",
+                                                            "flex": 1
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": POIID,
+                                                            "wrap": True,
+                                                            "color": "#666666",
+                                                            "size": "sm",
+                                                            "flex": 5
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "電話",
+                                                            "color": "#aaaaaa",
+                                                            "size": "sm",
+                                                            "flex": 1
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": Telno,
+                                                            "wrap": True,
+                                                            "color": "#666666",
+                                                            "size": "sm",
+                                                            "flex": 5
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "傳真",
+                                                            "color": "#aaaaaa",
+                                                            "size": "sm",
+                                                            "flex": 1
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": FaxNo,
+                                                            "wrap": True,
+                                                            "color": "#666666",
+                                                            "size": "sm",
+                                                            "flex": 5
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "type": "box",
+                                                    "layout": "baseline",
+                                                    "contents": [
+                                                        {
+                                                            "type": "text",
+                                                            "text": "地址",
+                                                            "color": "#aaaaaa",
+                                                            "size": "sm",
+                                                            "flex": 1
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "text": Address,
+                                                            "wrap": True,
+                                                            "color": "#666666",
+                                                            "size": "sm",
+                                                            "flex": 5
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "spacing": "xs",
+                                            "margin": "lg",
+                                            "contents": line_icon_box_contents,
+                                        }
+                                    ]
+                                }
+
+                                bubble_footer = {
+                                    "type": "box",
+                                    "layout": "vertical",
+                                    "spacing": "md",
+                                    "paddingTop": "xl",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "style": "primary",
+                                            "color": "#2E8B57",
+                                            "height": "md",
+                                            "action": {
+                                                "type": "uri",
+                                                "label": "分享給好友",
+                                                "uri": "?".join([line_liff_url, query_parameter])
+                                            }
+                                        },
+                                        {   
+                                            "type": "box",
+                                            "layout": "horizontal",
+                                            "spacing": "md",
+                                            "contents": [
+                                                {
+                                                    "type": "button",
+                                                    "style": "secondary",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "通話",
+                                                        "uri": uri_Telno
+                                                    }
+                                                },
+                                                {
+                                                    "type": "button",
+                                                    "style": "secondary",
+                                                    "action": {
+                                                        "type": "uri",
+                                                        "label": "地圖",
+                                                        "uri": uri_Address
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+
                                 bubble = {
                                     "type": "bubble",
-                                    "hero": {
-                                        "type": "image",
-                                        "url": "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m",
-                                        "size": "4xl",
-                                        "aspectRatio": "2:1",
-                                        "aspectMode": "fit"
-                                    },
-                                    "body": {
-                                        "type": "box",
-                                        "layout": "vertical",
-                                        "paddingTop": "none",
-                                        "contents": [
-                                            {
-                                                "type": "text",
-                                                "text": POIName,
-                                                "weight": "bold",
-                                                "size": "xl"
-                                            },
-                                            {
-                                                "type": "box",
-                                                "layout": "vertical",
-                                                "margin": "lg",
-                                                "spacing": "sm",
-                                                "contents": [
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "contents": [
-                                                            {
-                                                                "type": "text",
-                                                                "text": "店號",
-                                                                "color": "#aaaaaa",
-                                                                "size": "sm",
-                                                                "flex": 1
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": POIID,
-                                                                "wrap": True,
-                                                                "color": "#666666",
-                                                                "size": "sm",
-                                                                "flex": 5
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "contents": [
-                                                            {
-                                                                "type": "text",
-                                                                "text": "電話",
-                                                                "color": "#aaaaaa",
-                                                                "size": "sm",
-                                                                "flex": 1
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": Telno,
-                                                                "wrap": True,
-                                                                "color": "#666666",
-                                                                "size": "sm",
-                                                                "flex": 5
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "contents": [
-                                                            {
-                                                                "type": "text",
-                                                                "text": "傳真",
-                                                                "color": "#aaaaaa",
-                                                                "size": "sm",
-                                                                "flex": 1
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": FaxNo,
-                                                                "wrap": True,
-                                                                "color": "#666666",
-                                                                "size": "sm",
-                                                                "flex": 5
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "type": "box",
-                                                        "layout": "baseline",
-                                                        "contents": [
-                                                            {
-                                                                "type": "text",
-                                                                "text": "地址",
-                                                                "color": "#aaaaaa",
-                                                                "size": "sm",
-                                                                "flex": 1
-                                                            },
-                                                            {
-                                                                "type": "text",
-                                                                "text": Address,
-                                                                "wrap": True,
-                                                                "color": "#666666",
-                                                                "size": "sm",
-                                                                "flex": 5
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "type": "box",
-                                                "layout": "vertical",
-                                                "spacing": "xs",
-                                                "margin": "lg",
-                                                "contents": line_icon_box_contents,
-                                            }
-                                        ]
-                                    },
-                                    "footer":{
-                                        "type": "box",
-                                        "layout": "vertical",
-                                        "spacing": "sm",
-                                        "paddingTop": "xs",
-                                        "contents": [
-                                            {
-                                                "type": "button",
-                                                "style": "link",
-                                                "height": "sm",
-                                                "action": {
-                                                    "type": "uri",
-                                                    "label": "CALL",
-                                                    "uri": uri_Telno
-                                                }
-                                            },
-                                            {
-                                                "type": "button",
-                                                "style": "link",
-                                                "height": "sm",
-                                                "action": {
-                                                    "type": "uri",
-                                                    "label": "Google Map",
-                                                    "uri": uri_Address
-                                                }
-                                            },
-                                        ]
-                                    }
+                                    "hero": bubble_hero,
+                                    "body": bubble_body,
+                                    "footer":bubble_footer
                                 }
 
                                 bubble_contents.append(bubble)

@@ -1,0 +1,243 @@
+<html>
+    <head>
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
+        <input id="line_liff_url" value="{{ line_liff_url }}" type="hidden" />
+        <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                liff.init({
+                    liffId: '1657891117-WkxkGdjL'
+                }).then(() => {
+                    const line_liff_url = document.getElementById("line_liff_url").value
+                    const getUrlString = location.href
+                    const url = new URL(getUrlString)
+                    const POIName = url.searchParams.get('POIName')
+                    const POIID = url.searchParams.get('POIID')
+                    const Telno = url.searchParams.get('Telno')
+                    const FaxNo = url.searchParams.get('FaxNo')
+                    const Address = url.searchParams.get('Address')
+                    const array_StoreImageTitle = url.searchParams.get('StoreImageTitle').split(" ")
+                    
+                    const uri_Telno = "tel:" + Telno
+                    const google_map_query = encodeURI("7-ELEVEN "+POIName+"門市")
+                    const uri_Address = "https://www.google.com/maps/search/?api=1&query=" + google_map_query
+
+                    const list_StoreImageTitle = []
+                    while(array_StoreImageTitle.length) list_StoreImageTitle.push(array_StoreImageTitle.splice(0,7));
+
+                    const line_icon_box_contents = []
+                    for (i_line of list_StoreImageTitle) {
+                        let icon_box_contents = []
+                        for (store_service of i_line) {
+                            let icon_url = `https://emap.pcsc.com.tw/menuImg/service_${store_service}.jpg`
+                            
+                            let icon = {
+                                "type": "icon",
+                                "size": "xxl",
+                                "url": icon_url
+                            }
+
+                            icon_box_contents.push(icon)
+                        }
+
+                        let baseline_box = {
+                            "type": "box",
+                            "layout": "baseline",
+                            "contents": icon_box_contents,
+                            "spacing": "sm"
+                        }
+
+                        line_icon_box_contents.push(baseline_box)
+                    }
+
+                    const bubble_hero = {
+                        "type": "image",
+                        "url": "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m",
+                        "size": "4xl",
+                        "aspectRatio": "2:1",
+                        "aspectMode": "fit"
+                    }
+
+                    const bubble_body = {
+                        "type": "box",
+                        "layout": "vertical",
+                        "paddingTop": "none",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": POIName,
+                                "weight": "bold",
+                                "size": "xl"
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "margin": "lg",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "店號",
+                                                "color": "#aaaaaa",
+                                                "size": "sm",
+                                                "flex": 1
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": POIID,
+                                                "wrap": true,
+                                                "color": "#666666",
+                                                "size": "sm",
+                                                "flex": 5
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "電話",
+                                                "color": "#aaaaaa",
+                                                "size": "sm",
+                                                "flex": 1
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": Telno,
+                                                "wrap": true,
+                                                "color": "#666666",
+                                                "size": "sm",
+                                                "flex": 5
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "傳真",
+                                                "color": "#aaaaaa",
+                                                "size": "sm",
+                                                "flex": 1
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": FaxNo,
+                                                "wrap": true,
+                                                "color": "#666666",
+                                                "size": "sm",
+                                                "flex": 5
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "baseline",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "地址",
+                                                "color": "#aaaaaa",
+                                                "size": "sm",
+                                                "flex": 1
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": Address,
+                                                "wrap": true,
+                                                "color": "#666666",
+                                                "size": "sm",
+                                                "flex": 5
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "xs",
+                                "margin": "lg",
+                                "contents": line_icon_box_contents,
+                            }
+                        ]
+                    }
+
+                    const bubble_footer = {
+                        "type": "box",
+                        "layout": "vertical",
+                        "spacing": "md",
+                        "paddingTop": "xl",
+                        "contents": [
+                            {
+                                "type": "button",
+                                "style": "primary",
+                                "color": "#2E8B57",
+                                "height": "md",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "分享給好友",
+                                    "uri": line_liff_url + url.search
+                                }
+                            },
+                            {   
+                                "type": "box",
+                                "layout": "horizontal",
+                                "spacing": "md",
+                                "contents": [
+                                    {
+                                        "type": "button",
+                                        "style": "secondary",
+                                        "action": {
+                                            "type": "uri",
+                                            "label": "通話",
+                                            "uri": uri_Telno
+                                        }
+                                    },
+                                    {
+                                        "type": "button",
+                                        "style": "secondary",
+                                        "action": {
+                                            "type": "uri",
+                                            "label": "地圖",
+                                            "uri": uri_Address
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+                    liff.shareTargetPicker([{
+                        "type": "flex",
+                        "altText": "門市資料",
+                        "contents": {
+                            "type": "bubble",
+                            "hero": bubble_hero,
+                            "body": bubble_body,
+                            "footer":bubble_footer
+                        }
+                    }]).then(() => {
+                        liff.closeWindow();
+                    })
+                }).catch((e) => {
+                    console.log(e);
+                    console.log('初始化失敗');
+                });
+            });
+        </script>
+
+    </head>
+    <body>
+    </body>
+</html>
