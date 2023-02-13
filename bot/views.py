@@ -83,8 +83,6 @@ def callback(request):
                                 google_map_query = parse.quote("7-ELEVEN "+POIName+"門市")
                                 uri_Address = "https://www.google.com/maps/search/?api=1&query=" + google_map_query
 
-                                print(list_StoreImageTitle)
-
                                 query_parameter = parse.urlencode({
                                     "POIID": POIID,
                                     "POIName": POIName,
