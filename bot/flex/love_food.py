@@ -1,4 +1,5 @@
 from datetime import datetime
+import math
 
 
 class LoveFoodBubbleBody:
@@ -10,7 +11,7 @@ class LoveFoodBubbleBody:
 
     @classmethod
     def calculate_n_bubble(cls, n_item):
-        return n_item//5 + 1
+        return math.ceil(n_item/5)
 
     def _in_bubble(self, ith_item):
         return self.n_item_in_bubble*self._ith_bubble <= ith_item < self.n_item_in_bubble*(self._ith_bubble+1)
