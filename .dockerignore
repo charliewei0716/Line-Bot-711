@@ -1,5 +1,1 @@
 fly.toml
-.git
-.github
-*.sqlite3
-.gitignore
