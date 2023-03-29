@@ -14,9 +14,11 @@ handler = WebhookHandler(config("LINE_CHANNEL_SECRET"))
 
 @bot_blueprint.route("/share", methods=["GET"])
 def share():
-    line_liff_url = config("LINE_LIFF_URL")
-    line_liff_id = config("LINE_LIFF_ID")
-    return render_template("bot/share.html", line_liff_url=line_liff_url, line_liff_id=line_liff_id)
+    context = {
+        "line_liff_url": config("LINE_LIFF_URL"),
+        "line_liff_id": config("LINE_LIFF_ID")
+    }
+    return render_template("bot/share.html", **context)
 
 
 @bot_blueprint.route("/callback", methods=["POST"])
