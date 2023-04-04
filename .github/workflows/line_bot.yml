@@ -27,7 +27,7 @@ jobs:
 
       - name: "Install line-bot-sdk"
         run: 
-          pip install line-bot-sdk==2.4.1
+          pip install line-bot-sdk==2.4.1 python-decouple==3.8
 
       - name: "Update Line rich menu"
         run: 
