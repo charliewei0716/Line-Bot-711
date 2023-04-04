@@ -2,7 +2,9 @@ from flask import request, render_template, abort
 from decouple import config
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
-from linebot.models import MessageEvent, TextMessage, FlexSendMessage, TextSendMessage
+from linebot.models import (
+    MessageEvent, TextMessage, FlexSendMessage, TextSendMessage
+)
 
 from . import bot_blueprint
 from .domain import services

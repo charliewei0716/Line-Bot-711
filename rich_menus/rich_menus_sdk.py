@@ -1,11 +1,13 @@
 import requests
 import json
 from linebot import LineBotApi
+from decouple import config
+
 
 class RichMenus():
 
     RICHMENUS_ENDPOINT = "https://api.line.me/v2/bot/richmenu"
-    USER_ALL_RICHMENUS_ENDPOINT = "https://api.line.me/v2/bot/user/all/richmenu/"
+    USER_ALL_RICHMENUS_ENDPOINT = "https://api.line.me/v2/bot/user/all/richmenu/" # noqa
 
     def __init__(
         self, channel_access_token, richmenus_endpoint=RICHMENUS_ENDPOINT,
@@ -15,19 +17,23 @@ class RichMenus():
         self.user_all_richmenus_endpoint = user_all_richmenus_endpoint
         self.headers = {
             "Authorization": "Bearer " + channel_access_token,
-            "Content-Type":"application/json"
+            "Content-Type": "application/json"
         }
         self.line_bot_api = LineBotApi(channel_access_token)
 
     def create(self, rich_menus_body, content_type, content):
 
         response = requests.post(
-            self.richmenus_endpoint, headers=self.headers, data=json.dumps(rich_menus_body)#.encode('utf-8')
+            self.richmenus_endpoint,
+            headers=self.headers,
+            data=json.dumps(rich_menus_body)
         ).json()
 
         richMenuId = response["richMenuId"]
 
-        self.line_bot_api.set_rich_menu_image(richMenuId, content_type, content)
+        self.line_bot_api.set_rich_menu_image(
+            richMenuId, content_type, content
+        )
 
         response = requests.post(
             self.user_all_richmenus_endpoint + richMenuId, headers=self.headers
@@ -48,13 +54,7 @@ if __name__ == '__main__':
 
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(os.path.join(BASE_DIR, ".dev.env"))
-    except:
-        pass
-
-    LINE_CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN')
+    LINE_CHANNEL_ACCESS_TOKEN = config("LINE_CHANNEL_ACCESS_TOKEN")
 
     rich_menus = RichMenus(LINE_CHANNEL_ACCESS_TOKEN)
 
@@ -65,13 +65,15 @@ if __name__ == '__main__':
         "selected": "true",
         "name": "start",
         "chatBarText": "點我開始",
-        "areas":[
+        "areas": [
             {
-            "bounds": {"x": 0, "y": 0, "width": 2500, "height": 843},
-            "action": {"type": "message", "text": "小7亞萬"}
+                "bounds": {"x": 0, "y": 0, "width": 2500, "height": 843},
+                "action": {"type": "message", "text": "小7亞萬"}
             }
         ]
     }
 
-    with open(os.path.join(BASE_DIR, "rich_menus", "line_rich_menus.jpg"), 'rb') as f:
+    with open(
+        os.path.join(BASE_DIR, "rich_menus", "line_rich_menus.jpg"), "rb"
+    ) as f:
         rich_menus.create(rich_menus_body, "image/jpeg", f)

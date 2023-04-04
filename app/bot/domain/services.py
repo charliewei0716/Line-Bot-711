@@ -7,7 +7,7 @@ class InvalidKeyWord(Exception):
 
 
 def is_invalid_key_word(store_scraper: scrape.StoreScraper):
-    return len(store_scraper)==0
+    return len(store_scraper) == 0
 
 
 def to_flex(key_word: str):
@@ -21,7 +21,9 @@ def to_flex(key_word: str):
     list_category_stock_item = store_scraper.to_list()
     #
     flex = model.to_flex(
-        list_store, list_category_stock_item, store_scraper.update_time, key_word
+        list_store,
+        list_category_stock_item,
+        store_scraper.update_time,
+        key_word
     )
     return flex
-

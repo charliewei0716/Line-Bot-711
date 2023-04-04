@@ -1,5 +1,4 @@
 import abc
-import os
 from datetime import datetime
 from typing import List, Dict
 from urllib import parse
@@ -30,7 +29,9 @@ def get_store_carousel(store: store.Store):
 
 
 def sub_list(main_list: List, num: int):
-    return [main_list[start:start+num] for start in range(0, len(main_list), num)]
+    return [
+        main_list[start:start+num] for start in range(0, len(main_list), num)
+    ]
 
 
 def get_love_food_carousel(
@@ -38,7 +39,9 @@ def get_love_food_carousel(
     list_category_stock_item: List[store.CategoryStockItem],
     update_time: str
 ):
-    love_food_bubble = LoveFoodBubble(store, list_category_stock_item, update_time)
+    love_food_bubble = LoveFoodBubble(
+        store, list_category_stock_item, update_time
+    )
     return Carousel(love_food_bubble)
 
 
@@ -46,10 +49,10 @@ def has_other_carousel(list_store: List[store.Store]):
     return len(list_store) > 1
 
 
-def get_other_carousel(list_store: List[store.Store], key_word:str):
+def get_other_carousel(list_store: List[store.Store], key_word: str):
     other_bubble = None
-    for store in list_store[1:]:
-        temp_other_bubble = OtherBubble(store, key_word, len(list_store))
+    for store_obj in list_store[1:]:
+        temp_other_bubble = OtherBubble(store_obj, key_word, len(list_store))
         temp_other_bubble.create_body_contents()
         if other_bubble:
             other_bubble += temp_other_bubble
@@ -68,7 +71,7 @@ class Bubble(abc.ABC):
 class Carousel:
     def __init__(self, bubble: Bubble) -> None:
         self.contents = [bubble.flex]
-    
+
     def __add__(self, other: object) -> object:
         self.contents += other.contents
         return self
@@ -83,7 +86,7 @@ class Carousel:
 class StoreBubble(Bubble):
     line_liff_url = config("LINE_LIFF_URL")
     google_map_search_url = "https://www.google.com/maps/search/?api=1&query="
-    store_image_url = "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m"
+    store_image_url = "https://drive.google.com/uc?export=view&id=1bh8pHsrrbFhtPb57CAO8-l0CzSjlo_5m"  # noqa
 
     def __init__(self, store: store.Store):
         self._store = store
@@ -95,7 +98,7 @@ class StoreBubble(Bubble):
             row = self._store.service[row_start: row_start+num]
 
             for store_service in row:
-                icon_url = f"https://emap.pcsc.com.tw/menuImg/service_{store_service}.jpg"
+                icon_url = f"https://emap.pcsc.com.tw/menuImg/service_{store_service}.jpg"  # noqa
                 icon = {
                     "type": "icon", "size": "xxl", "url": icon_url
                 }
@@ -266,7 +269,7 @@ class StoreBubble(Bubble):
                             "uri": self._get_share_url()
                         }
                     },
-                    {   
+                    {
                         "type": "box",
                         "layout": "horizontal",
                         "spacing": "md",
@@ -298,7 +301,8 @@ class StoreBubble(Bubble):
 
 
 class OtherBubble(Bubble):
-    location_image_url = "https://drive.google.com/uc?export=view&id=1kN4KpeevpHXQUtKHa3tbZsUVUWqcSUXI"
+    location_image_url = "https://drive.google.com/uc?export=view&id=1kN4KpeevpHXQUtKHa3tbZsUVUWqcSUXI"  # noqa
+
     def __init__(self, store: store.Store, key_word: str, n_store: int):
         self._store = store
         self._key_word = key_word
@@ -350,14 +354,14 @@ class OtherBubble(Bubble):
                 },
             }
         ]
-    
+
     def _get_hero_text(self) -> str:
         return f"- 點擊搜尋其他 {self._n_store - 1} 間包含「{self._key_word}」的門市 -"
 
     @property
     def flex(self) -> Dict:
         flex = {
-            "type": "bubble", 
+            "type": "bubble",
             "header": {
                 "type": "box",
                 "layout": "vertical",
@@ -372,7 +376,7 @@ class OtherBubble(Bubble):
                     }
                 ],
                 "backgroundColor": "#2E8B57"
-            }, 
+            },
             "hero": {
                 "type": "box",
                 "layout": "vertical",
@@ -401,12 +405,12 @@ class OtherBubble(Bubble):
             }
         }
         return flex
-        
+
 
 class LoveFoodBubble(Bubble):
     def __init__(
-        self, 
-        store: store.Store, 
+        self,
+        store: store.Store,
         list_category_stock_item: List[store.CategoryStockItem],
         update_time: str
     ):
@@ -447,20 +451,22 @@ class LoveFoodBubble(Bubble):
                         "type": "text",
                         "text": category_stock_item.name,
                         "weight": "bold"
-                    }  
+                    }
                 ] + self._get_detail_item_flex(category_stock_item.list_item)
             })
         return flex
 
     def _get_update_time_text(self):
-        datetime_object = datetime.strptime(self._update_time, "%Y-%m-%dT%H:%M:%S")
+        datetime_object = datetime.strptime(
+            self._update_time, "%Y-%m-%dT%H:%M:%S"
+        )
         datetime_str = datetime_object.strftime("%Y-%m-%d %H:%M:%S")
         return "更新時間：" + datetime_str
-    
+
     @property
     def flex(self):
         flex = {
-            "type": "bubble", 
+            "type": "bubble",
             "header": {
                 "type": "box",
                 "layout": "vertical",
@@ -471,7 +477,7 @@ class LoveFoodBubble(Bubble):
                         "contents": [
                             {
                                 "type": "image",
-                                "url": "https://drive.google.com/uc?export=view&id=1Ut3oitcNiYdlN7EgS1tQ2Yj7CyGIjtJr",
+                                "url": "https://drive.google.com/uc?export=view&id=1Ut3oitcNiYdlN7EgS1tQ2Yj7CyGIjtJr",  # noqa
                                 "flex": 0,
                                 "aspectRatio": "870:346"
                             },
@@ -491,7 +497,7 @@ class LoveFoodBubble(Bubble):
                 "paddingStart": "lg",
                 "paddingTop": "lg",
                 "paddingBottom": "none"
-            }, 
+            },
             "hero": "",
             "body": {
                 "type": "box",
@@ -504,15 +510,15 @@ class LoveFoodBubble(Bubble):
                 "type": "box",
                 "layout": "vertical",
                 "contents": [
-                {
-                    "type": "separator"
-                },
-                {
-                    "type": "text",
-                    "text": self._get_update_time_text(),
-                    "size": "xxs",
-                    "color": "#aaaaaa"
-                }
+                    {
+                        "type": "separator"
+                    },
+                    {
+                        "type": "text",
+                        "text": self._get_update_time_text(),
+                        "size": "xxs",
+                        "color": "#aaaaaa"
+                    }
                 ],
                 "spacing": "lg"
             }

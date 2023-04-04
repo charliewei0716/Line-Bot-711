@@ -38,7 +38,7 @@ class Store:
     @property
     def address(self) -> str:
         return self._address
-    
+
     @property
     def service(self) -> List[str]:
         return self._service
