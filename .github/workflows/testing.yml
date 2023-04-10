@@ -11,6 +11,7 @@ on:
 
 jobs:
   test:
+    name: Testing
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository
@@ -27,7 +28,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run tests with coverage
-      run: pytest --cov=myapp --cov-report=xml tests/
+      run: pytest --cov=app --cov-report=xml tests/
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
