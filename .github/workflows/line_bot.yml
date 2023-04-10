@@ -18,18 +18,20 @@ jobs:
     name: Update Line rich menu
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-      - name: "Set up Python"
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
-      - name: "Install line-bot-sdk"
-        run: 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
           pip install line-bot-sdk==2.4.1 python-decouple==3.8
 
-      - name: "Update Line rich menu"
+      - name: Update Line rich menu
         run: 
           python ./rich_menus/rich_menus_sdk.py
 
