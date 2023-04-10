@@ -9,6 +9,10 @@ on:
       - .dockerignore
   workflow_dispatch:
 
+env:
+  LOVEFOOD_MID_V: ${{ secrets.LOVEFOOD_MID_V }}
+  CONFIG_TYPE: app.config.DevelopmentConfig
+
 jobs:
   test:
     name: Testing

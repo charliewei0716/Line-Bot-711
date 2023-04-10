@@ -1,4 +1,4 @@
-from app.bot.domain import store
+from app.domain import store
 
 
 def test_test():

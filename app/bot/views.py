@@ -7,7 +7,7 @@ from linebot.models import (
 )
 
 from . import bot_blueprint
-from .domain import services
+from ..domain import services
 
 
 line_bot_api = LineBotApi(config("LINE_CHANNEL_ACCESS_TOKEN"))
